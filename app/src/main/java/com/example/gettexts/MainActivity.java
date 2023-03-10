@@ -53,16 +53,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        if ((ContextCompat.checkSelfPermission(
-                this.getApplicationContext(), Manifest.permission.READ_SMS) ==
-                PackageManager.PERMISSION_GRANTED)) {
-            genCalendar();
-        } else {
-            requestPermissionLauncher.launch(
-                    Manifest.permission.READ_SMS);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
         }
+
+//        if ((ContextCompat.checkSelfPermission(
+//                this.getApplicationContext(), Manifest.permission.READ_SMS) ==
+//                PackageManager.PERMISSION_GRANTED)) {
+            genCalendar();
+//        } else {
+//            requestPermissionLauncher.launch(
+//                    Manifest.permission.READ_SMS);
+//        }
     }
 
     private Calendar getDay(int year, int month, int day) {
@@ -83,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar currDate = togetherDates.get(0);
         TableRow currRow = new TableRow(this);
-        currRow.addView(createButton(getDay(2022, 2, 13), null));
-        currRow.addView(createButton(getDay(2022, 2, 14), null));
-        currRow.addView(createButton(getDay(2022, 2, 15), null));
+//        currRow.addView(createButton(getDay(2022, 2, 13), null));
+//        currRow.addView(createButton(getDay(2022, 2, 14), null));
+//        currRow.addView(createButton(getDay(2022, 2, 15), null));
 
         while (currDate.compareTo(Calendar.getInstance()) <= 0) {
             if (currDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     private Button createButton(Calendar currDate, String[] messages) {
         TableRow.LayoutParams layoutParams =
                 new TableRow.LayoutParams(0,
-                        pixelsToSp(400), (float) (1.0 / 7.0));
+                        pixelsToSp(225), (float) (1.0 / 7.0));
 
         Button b = new Button(this);
         b.setLayoutParams(layoutParams);
@@ -149,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     // { date sent: [Hailey's wordle, Jamin's wordle] }
     private Map<Date, String[]> getDates() {
         String[] projection = new String[]{"address", "body", "date"};
-        Cursor receivedCursor = getContentResolver().query(Uri.parse("content://sms/inbox"), projection, "address LIKE ? AND body LIKE ?", new String[]{"%2038196320%", "%Wordle%/6%"}, "date");
+        Cursor receivedCursor = getContentResolver().query(Uri.parse("content://sms/inbox"), projection, "address LIKE ? AND body LIKE ?", new String[]{"%6126705279%", "%Wordle%/6%"}, "date");
         Cursor sentCursor = getContentResolver().query(Uri.parse("content://sms/sent"), projection, "body LIKE ?", new String[]{"%Wordle%/6%"}, "date");
 
         Map<Date, String[]> together = new HashMap<>();
@@ -164,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                     String receivedWordle = wordleChunk(receivedMsg);
                     String sentWordle = wordleChunk(sentMsg);
 
-                    together.put(date, new String[]{receivedWordle, sentWordle});
+                    together.put(date, new String[]{sentWordle, receivedWordle});
                 }
             }
         } catch (ParseException e) {
